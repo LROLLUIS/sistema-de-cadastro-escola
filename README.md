@@ -1,51 +1,52 @@
 ```mermaid
-flowchart LR
-    %% Atores
+flowchart TD
+    %% Atores no Topo
     Aluno((Aluno))
+    Resp((Responsável))
     Prof((Professor))
     Sec((Secretaria))
-    Resp((Responsável))
-    Pag[Sistema de Pagamento]
 
     subgraph "Sistema de Matrícula Online"
-        UC1([Cadastrar/Login])
-        UC2([Visualizar Cursos])
-        UC3([Realizar Matrícula])
-        UC4([Visualizar Notas])
-        UC5([Gráfico de Desempenho])
-        UC6([Chat/Mensagens])
-        UC7([Lançar Notas/Frequência])
-        UC8([Materiais Didáticos])
-        UC9([Gerenciar Usuários])
-        UC10([Aprovar Matrícula])
-        UC11([Processar Pagamento])
+        direction TB
+        
+        %% Grupo de Acesso e Comunicação
+        subgraph "Base"
+            UC1([Cadastrar/Login])
+            UC6([Chat/Mensagens])
+        end
+
+        %% Grupo Acadêmico
+        subgraph "Acadêmico"
+            UC4([Visualizar Notas])
+            UC5([Gráfico de Desempenho])
+            UC7([Lançar Notas/Frequência])
+            UC8([Materiais Didáticos])
+        end
+
+        %% Grupo Administrativo
+        subgraph "Administrativo"
+            UC2([Visualizar Cursos])
+            UC3([Realizar Matrícula])
+            UC10([Aprovar Matrícula])
+            UC9([Gerenciar Usuários])
+            UC11([Processar Pagamento])
+        end
     end
 
-    %% Conexões Aluno
-    Aluno --- UC1
-    Aluno --- UC2
-    Aluno --- UC3
-    Aluno --- UC4
-    Aluno --- UC5
-    Aluno --- UC6
+    %% Sistema Externo na Lateral
+    Pag[Sistema de Pagamento]
 
-    %% Conexões Professor
-    Prof --- UC1
-    Prof --- UC6
-    Prof --- UC7
-    Prof --- UC8
+    %% Conexões Aluno
+    Aluno --- UC1 & UC2 & UC3 & UC4 & UC5 & UC6
 
     %% Conexões Responsável
-    Resp --- UC1
-    Resp --- UC4
-    Resp --- UC5
-    Resp --- UC6
+    Resp --- UC1 & UC4 & UC5 & UC6
+
+    %% Conexões Professor
+    Prof --- UC1 & UC6 & UC7 & UC8
 
     %% Conexões Secretaria
-    Sec --- UC1
-    Sec --- UC6
-    Sec --- UC9
-    Sec --- UC10
+    Sec --- UC1 & UC6 & UC9 & UC10
 
     %% Integração Pagamento
     UC3 -.-> UC11
