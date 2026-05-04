@@ -7,7 +7,7 @@ Este projeto visa automatizar o processo de matrícula, acompanhamento acadêmic
 Abaixo está a representação visual das interações dos usuários com o sistema.
 
 ```mermaid
-useCaseDiagram
+graph TD;
     %% Definição dos Atores
     actor "Aluno" as A
     actor "Professor" as P
