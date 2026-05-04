@@ -1,60 +1,59 @@
-# Sistema de Matrícula Online - Documentação do Projeto
-
-Este projeto visa automatizar o processo de matrícula, acompanhamento acadêmico e comunicação entre os membros de um colégio.
-
-## Diagrama de Casos de Uso
-
-Abaixo está a representação visual das interações dos usuários com o sistema.
-
 ```mermaid
-graph TD;
-    %% Definição dos Atores
-    actor "Aluno" as A
-    actor "Professor" as P
-    actor "Secretaria" as S
-    actor "Responsável" as R
-    actor "Sist. Pagamento" as SP <<Sistema>>
+flowchart TD
+    %% Atores (Círculos)
+    Aluno((Aluno))
+    Resp((Responsável))
+    Prof((Professor))
+    Sec((Secretaria))
 
-    package "Sistema de Matrícula Online" {
-        usecase "Cadastrar/Login" as UC1
-        usecase "Visualizar Cursos" as UC2
-        usecase "Realizar Matrícula" as UC3
-        usecase "Visualizar Notas e Histórico" as UC4
-        usecase "Ver Gráfico de Desempenho" as UC5
-        usecase "Trocar Mensagens (Chat)" as UC6
-        usecase "Lançar Notas e Frequência" as UC7
-        usecase "Disponibilizar Materiais" as UC8
-        usecase "Gerenciar Usuários e Cursos" as UC9
-        usecase "Aprovar Matrícula" as UC10
-        usecase "Processar Pagamento" as UC11
-    }
+    %% Sistema Externo (Quadrado)
+    Pag[Sistema de Pagamento]
 
-    %% Conexões do Aluno
-    A --> UC1
-    A --> UC2
-    A --> UC3
-    A --> UC4
-    A --> UC5
-    A --> UC6
+    subgraph "Sistema de Matrícula Online"
+        direction TB
+        
+        %% Casos de Uso (Cápsulas/Elipses)
+        Login([Login/Autenticação])
+        Chat([Chat de Comunicação])
+        Matricula([Realizar Matrícula])
+        Notas([Ver Notas/Boletim])
+        Grafico([Gráfico de Desempenho])
+        Lancar([Lançar Notas/Frequência])
+        Materiais([Upload de Materiais])
+        Gestao([Gerenciar Usuários/Cursos])
+        
+        %% Ponto de Decisão (Losango)
+        Aprovacao{Aprovar Matrícula?}
+        CheckPag{Pagamento OK?}
+    end
 
-    %% Conexões do Professor
-    P --> UC1
-    P --> UC6
-    P --> UC7
-    P --> UC8
+    %% Fluxo do Aluno
+    Aluno --- Login
+    Login --- Chat
+    Aluno --- Matricula
+    Matricula --> CheckPag
+    CheckPag -- Sim --> Notas
+    Aluno --- Grafico
 
-    %% Conexões do Responsável (Pai/Tutor)
-    R --> UC1
-    R --> UC4
-    R --> UC5
-    R --> UC6
+    %% Fluxo do Responsável
+    Resp --- Login
+    Resp --- Notas
+    Resp --- Grafico
+    Resp --- Chat
 
-    %% Conexões da Secretaria
-    S --> UC1
-    S --> UC6
-    S --> UC9
-    S --> UC10
+    %% Fluxo do Professor
+    Prof --- Login
+    Prof --- Lancar
+    Prof --- Materiais
+    Prof --- Chat
 
-    %% Relação entre Casos de Uso e Sistemas Externos
-    UC3 ..> UC11 : <<include>>
-    UC11 -- SP
+    %% Fluxo da Secretaria
+    Sec --- Login
+    Sec --- Gestao
+    Sec --- Aprovacao
+    Aprovacao -- Sim --> Matricula
+    Sec --- Chat
+
+    %% Integração com Sistema Externo
+    CheckPag -- Não --> Pag
+    Pag -- Confirmação --> CheckPag
