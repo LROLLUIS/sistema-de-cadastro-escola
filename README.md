@@ -1,53 +1,60 @@
+# Sistema de Matrícula Online - Documentação do Projeto
+
+Este projeto visa automatizar o processo de matrícula, acompanhamento acadêmico e comunicação entre os membros de um colégio.
+
+## Diagrama de Casos de Uso
+
+Abaixo está a representação visual das interações dos usuários com o sistema.
+
 ```mermaid
-graph TD;
-    %% Atores no Topo
-    Aluno((Aluno))
-    Resp((Responsável))
-    Prof((Professor))
-    Sec((Secretaria))
+useCaseDiagram
+    %% Definição dos Atores
+    actor "Aluno" as A
+    actor "Professor" as P
+    actor "Secretaria" as S
+    actor "Responsável" as R
+    actor "Sist. Pagamento" as SP <<Sistema>>
 
-    subgraph "Sistema de Matrícula Online"
-        direction TB
-        
-        %% Grupo de Acesso e Comunicação
-        subgraph "Base"
-            UC1([Cadastrar/Login])
-            UC6([Chat/Mensagens])
-        end
+    package "Sistema de Matrícula Online" {
+        usecase "Cadastrar/Login" as UC1
+        usecase "Visualizar Cursos" as UC2
+        usecase "Realizar Matrícula" as UC3
+        usecase "Visualizar Notas e Histórico" as UC4
+        usecase "Ver Gráfico de Desempenho" as UC5
+        usecase "Trocar Mensagens (Chat)" as UC6
+        usecase "Lançar Notas e Frequência" as UC7
+        usecase "Disponibilizar Materiais" as UC8
+        usecase "Gerenciar Usuários e Cursos" as UC9
+        usecase "Aprovar Matrícula" as UC10
+        usecase "Processar Pagamento" as UC11
+    }
 
-        %% Grupo Acadêmico
-        subgraph "Acadêmico"
-            UC4([Visualizar Notas])
-            UC5([Gráfico de Desempenho])
-            UC7([Lançar Notas/Frequência])
-            UC8([Materiais Didáticos])
-        end
+    %% Conexões do Aluno
+    A --> UC1
+    A --> UC2
+    A --> UC3
+    A --> UC4
+    A --> UC5
+    A --> UC6
 
-        %% Grupo Administrativo
-        subgraph "Administrativo"
-            UC2([Visualizar Cursos])
-            UC3([Realizar Matrícula])
-            UC10([Aprovar Matrícula])
-            UC9([Gerenciar Usuários])
-            UC11([Processar Pagamento])
-        end
-    end
+    %% Conexões do Professor
+    P --> UC1
+    P --> UC6
+    P --> UC7
+    P --> UC8
 
-    %% Sistema Externo na Lateral
-    Pag[Sistema de Pagamento]
+    %% Conexões do Responsável (Pai/Tutor)
+    R --> UC1
+    R --> UC4
+    R --> UC5
+    R --> UC6
 
-    %% Conexões Aluno
-    Aluno --- UC1 & UC2 & UC3 & UC4 & UC5 & UC6
+    %% Conexões da Secretaria
+    S --> UC1
+    S --> UC6
+    S --> UC9
+    S --> UC10
 
-    %% Conexões Responsável
-    Resp --- UC1 & UC4 & UC5 & UC6
-
-    %% Conexões Professor
-    Prof --- UC1 & UC6 & UC7 & UC8
-
-    %% Conexões Secretaria
-    Sec --- UC1 & UC6 & UC9 & UC10
-
-    %% Integração Pagamento
-    UC3 -.-> UC11
-    UC11 --- Pag
+    %% Relação entre Casos de Uso e Sistemas Externos
+    UC3 ..> UC11 : <<include>>
+    UC11 -- SP
