@@ -1,5 +1,5 @@
 ```mermaid
-flowchart TD
+graph TD;
     %% Atores no Topo
     Aluno((Aluno))
     Resp((Responsável))
