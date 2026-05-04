@@ -1,59 +1,47 @@
 ```mermaid
 flowchart TD
-    %% Atores (Círculos)
-    Aluno((Aluno))
-    Resp((Responsável))
-    Prof((Professor))
-    Sec((Secretaria))
+    %% Herança de Atores (Conceito OO)
+    Usuario((Usuário Autenticado))
+    
+    Aluno((Aluno)) --|> Usuario
+    Prof((Professor)) --|> Usuario
+    Resp((Responsável)) --|> Usuario
+    Sec((Secretaria)) --|> Usuario
 
-    %% Sistema Externo (Quadrado)
-    Pag[Sistema de Pagamento]
+    %% Sistema Externo
+    Pag[<< Interface >>\nSistema de Pagamento]
 
     subgraph "Sistema de Matrícula Online"
-        direction TB
-        
-        %% Casos de Uso (Cápsulas/Elipses)
-        Login([Login/Autenticação])
-        Chat([Chat de Comunicação])
-        Matricula([Realizar Matrícula])
-        Notas([Ver Notas/Boletim])
-        Grafico([Gráfico de Desempenho])
-        Lancar([Lançar Notas/Frequência])
-        Materiais([Upload de Materiais])
-        Gestao([Gerenciar Usuários/Cursos])
-        
-        %% Ponto de Decisão (Losango)
-        Aprovacao{Aprovar Matrícula?}
-        CheckPag{Pagamento OK?}
+        %% Casos de Uso Comuns
+        UC_Base([Login / Logout])
+        UC_Chat([Trocar Mensagens])
+
+        %% Casos de Uso Específicos
+        subgraph "Módulo Acadêmico"
+            UC4([Visualizar Notas])
+            UC5([Gráfico de Desempenho])
+            UC7([Lançar Notas/Frequência])
+            UC8([Upload Materiais])
+        end
+
+        subgraph "Módulo Administrativo"
+            UC3([Realizar Matrícula])
+            UC9([Gerenciar Cadastros])
+            UC10([Aprovar Matrícula])
+            UC11{Processar Taxa}
+        end
     end
 
-    %% Fluxo do Aluno
-    Aluno --- Login
-    Login --- Chat
-    Aluno --- Matricula
-    Matricula --> CheckPag
-    CheckPag -- Sim --> Notas
-    Aluno --- Grafico
+    %% Relacionamentos de Generalização (Linhas que saem do Usuário)
+    Usuario --- UC_Base
+    Usuario --- UC_Chat
 
-    %% Fluxo do Responsável
-    Resp --- Login
-    Resp --- Notas
-    Resp --- Grafico
-    Resp --- Chat
+    %% Relacionamentos de Especialização
+    Aluno --- UC3 & UC4 & UC5
+    Resp --- UC4 & UC5
+    Prof --- UC7 & UC8
+    Sec --- UC9 & UC10
 
-    %% Fluxo do Professor
-    Prof --- Login
-    Prof --- Lancar
-    Prof --- Materiais
-    Prof --- Chat
-
-    %% Fluxo da Secretaria
-    Sec --- Login
-    Sec --- Gestao
-    Sec --- Aprovacao
-    Aprovacao -- Sim --> Matricula
-    Sec --- Chat
-
-    %% Integração com Sistema Externo
-    CheckPag -- Não --> Pag
-    Pag -- Confirmação --> CheckPag
+    %% Relacionamentos de Dependência (OO)
+    UC3 -.->|<< include >>| UC11
+    UC11 --- Pag
