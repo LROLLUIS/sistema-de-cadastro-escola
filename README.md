@@ -1,18 +1,12 @@
 ```mermaid
 flowchart LR
     %% 1. Definição dos Atores
-    Pessoa((Usuário Geral))
     Alu((Aluno))
     Pro((Professor))
     Sec((Secretaria))
     Pag[Sistema de Pagamento]
 
-    %% 2. Hierarquia (Herança OO)
-    Alu --> Pessoa
-    Pro --> Pessoa
-    Sec --> Pessoa
-
-    %% 3. Limite do Sistema e Casos de Uso Organizados
+    %% 2. Limite do Sistema e Casos de Uso
     subgraph "Sistema de Matrícula Online"
         direction TB
         
@@ -36,21 +30,21 @@ flowchart LR
             UC11([Gerar Relatórios])
         end
 
-        %% Processamento Interno
+        %% Processamento de Taxas
         UC_Taxa{Processar Taxas}
     end
 
-    %% 4. Conexões de Interação
-    %% O Aluno faz suas ações
+    %% 3. Conexões de Interação Direta
+    %% Aluno
     Alu --- UC1 & UC2 & UC3 & UC4
 
-    %% O Professor faz suas ações
+    %% Professor
     Pro --- UC5 & UC6 & UC7
 
-    %% A Secretaria faz suas ações
+    %% Secretaria
     Sec --- UC8 & UC9 & UC10 & UC11
 
-    %% Integração com Pagamento (Iniciada pela Matrícula ou Secretaria)
+    %% Integração com Pagamento
     UC3 -.-> UC_Taxa
     UC10 -.-> UC_Taxa
     UC_Taxa --- Pag
